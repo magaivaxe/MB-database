@@ -1,0 +1,10 @@
+
+CREATE USER 'role0' IDENTIFIED BY 'role0';
+
+CREATE USER 'role1' IDENTIFIED BY 'role1';
+
+CREATE USER 'role2' IDENTIFIED BY 'role2';
+
+CREATE USER 'role3' IDENTIFIED BY 'role3';
+
+GRANT ALL ON TABLE bibliothequeMB_DB.* TO 'role3';

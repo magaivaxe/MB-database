@@ -2,8 +2,8 @@
 -- -----------------------------------------------------
 -- Schema bibliothequeMB_DB
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `bibliothequeMB_DB` DEFAULT CHARACTER SET utf8mb4 ;
-USE `bibliothequeMB_DB` ;
+CREATE SCHEMA IF NOT EXISTS `bibliothequeMB_DB`;
+USE `bibliothequeMB_DB`;
 
 -- -----------------------------------------------------
 -- Table `bibliothequeMB_DB`.`Livres`
@@ -45,13 +45,13 @@ CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Utilisateurs` (
 -- Table `bibliothequeMB_DB`.`RendezVous`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`RendezVous` (
-  `idRendezVous` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `idLivre` INT NOT NULL,
   `idUtilisateur` INT NOT NULL,
   `datePrevue` DATE NOT NULL,
   `typeRV` ENUM('journee', 'matin', 'apresmidi') NOT NULL,
   `statusRV` ENUM('conclu', 'annule', 'attente') NULL DEFAULT 'attente',
-  PRIMARY KEY (`idRendezVous`),
+  PRIMARY KEY (`id`),
   INDEX `idUser_Users_idUser_idx` (`idUtilisateur` ASC),
   INDEX `idLivreRV_Livres_idLivre_idx` (`idLivre` ASC),
   CONSTRAINT `idUserRV_Users_idUser`
@@ -71,13 +71,13 @@ CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`RendezVous` (
 -- Table `bibliothequeMB_DB`.`Emprunts`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Emprunts` (
-  `idEmprunt` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `idLivre` INT NOT NULL,
   `idUtilisateur` INT NOT NULL,
   `dateEmp` DATE NOT NULL,
   `dateRen` DATE NOT NULL,
   `statusEM` ENUM('cours', 'fini', 'delai') NULL DEFAULT 'cours',
-  PRIMARY KEY (`idEmprunt`),
+  PRIMARY KEY (`id`),
   INDEX `idBookUDC_Books_idBookUDC_idx` (`idLivre`),
   INDEX `idUser_Users_idUser_idx` (`idUtilisateur`),
   CONSTRAINT `idLivreEm_Livres_idLivre`
@@ -97,12 +97,12 @@ CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Emprunts` (
 -- Table `bibliothequeMB_DB`.`Reservations`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Reservations` (
-  `idReservation` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `idLivre` INT NOT NULL,
   `idUtilisateur` INT NOT NULL,
   `datePrevue` DATE NOT NULL,
   `statusRS` ENUM('fini', 'annule', 'attente') NULL DEFAULT 'attente',
-  PRIMARY KEY (`idReservation`),
+  PRIMARY KEY (`id`),
   INDEX `idUser_Users_idUser_idx` (`idUtilisateur`),
   INDEX `idBookUDC_Books_idBookUDC_idx` (`idLivre`),
   CONSTRAINT `idUserRes_Users_idUser`
@@ -167,14 +167,14 @@ CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`ImagesLivres` (
 -- Table `bibliothequeMB_DB`.`Amendes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Amendes` (
-  `idAmende` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `idUtilisateur` INT NOT NULL,
   `idEmprunts` INT NOT NULL,
   `dateAmende` DATE NOT NULL,
   `valeur` DOUBLE(10,2) NOT NULL,
   `datePaye` DATE NULL,
   `statusAM` ENUM('ouverte', 'paye') NULL DEFAULT 'ouverte',
-  PRIMARY KEY (`idAmende`),
+  PRIMARY KEY (`id`),
   INDEX `idUser_Users_idUser_idx` (`idUtilisateur`),
   INDEX `idBorrow_Borrows_idBorrow_idx` (`idEmprunts`),
   CONSTRAINT `idUserAmen_Users_idUser`
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Amendes` (
     ON UPDATE NO ACTION,
   CONSTRAINT `idEmpruntsAme_Emprunts_idEmprunts`
     FOREIGN KEY (`idEmprunts`)
-    REFERENCES `bibliothequeMB_DB`.`Emprunts` (`idEmprunt`)
+    REFERENCES `bibliothequeMB_DB`.`Emprunts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
@@ -248,17 +248,3 @@ CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Livres_Editions` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
-
-USE `bibliothequeMB_DB` ;
-
-
-CREATE USER 'role0' IDENTIFIED BY 'role0';
-
-CREATE USER 'role1' IDENTIFIED BY 'role1';
-
-CREATE USER 'role2' IDENTIFIED BY 'role2';
-
-CREATE USER 'role3' IDENTIFIED BY 'role3';
-
-GRANT ALL ON TABLE bibliothequeMB_DB.* TO 'role3';
-
