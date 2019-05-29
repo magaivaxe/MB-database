@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Books` (
 -- Table `libraryMB_DB`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`User` (
-  `id` INT NOT NULL AUTO_INCREMENT COMMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `user` VARCHAR(30) NOT NULL,
   `lastName` VARCHAR(45) NOT NULL,
   `firstName` VARCHAR(45) NOT NULL,
