@@ -1,250 +1,238 @@
 
 -- -----------------------------------------------------
--- Schema bibliothequeMB_DB
+-- Schema libraryMB_DB
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `bibliothequeMB_DB`;
-USE `bibliothequeMB_DB`;
+CREATE SCHEMA IF NOT EXISTS `libraryMB_DB`;
+USE `libraryMB_DB`;
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Livres`
+-- Table `libraryMB_DB`.`Books`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Livres` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Books` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `cdu` VARCHAR(15) NOT NULL,
-  `titre` VARCHAR(60) NOT NULL,
-  `dateRegistre` DATE NOT NULL,
-  `typeLivre` ENUM('regulier', 'rare') NULL DEFAULT 'regulier',
+  `title` VARCHAR(60) NOT NULL,
+  `dateRegistry` DATE NOT NULL,
+  `typeBook` ENUM('regular', 'rare') NULL DEFAULT 'regular',
   PRIMARY KEY (`id`),
   UNIQUE KEY `cdu_unique` (`cdu`)
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Utilisateurs`
+-- Table `libraryMB_DB`.`User`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Utilisateurs` (
-  `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Control id',
-  `utilisateur` VARCHAR(30) NOT NULL COMMENT 'The idUser is the user nickName as: Marcos1234.',
-  `nom` VARCHAR(45) NOT NULL,
-  `preNom` VARCHAR(45) NOT NULL,
-  `dateNe` DATE NOT NULL,
-  `adresse` VARCHAR(60) NOT NULL,
-  `telephone` CHAR(10) NOT NULL,
-  `courriel` VARCHAR(45) NOT NULL,
-  `dateRegistre` DATE NOT NULL,
-  `role` ENUM('role0', 'role1', 'role2', 'role3') NULL DEFAULT 'role0',
-  `statusUT` ENUM('confirme', 'bloque', 'annule') NULL DEFAULT 'bloque',
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`User` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT,
+  `user` VARCHAR(30) NOT NULL,
+  `lastName` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `birthDay` DATE NOT NULL,
+  `address` VARCHAR(60) NOT NULL,
+  `phone` CHAR(10) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `dateRegistry` DATE NOT NULL,
+  `status` ENUM('open', 'bloqued', 'cancelled') NULL DEFAULT 'open',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `phoneNumer_unique` (`telephone`),
-  UNIQUE KEY `email_unique` (`courriel`),
-  UNIQUE KEY `utilisateur_unique` (`utilisateur`)
+  UNIQUE KEY `phoneNumber_unique` (`phone`),
+  UNIQUE KEY `email_unique` (`email`),
+  UNIQUE KEY `user_unique` (`user`)
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`RendezVous`
+-- Table `libraryMB_DB`.`Metting`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`RendezVous` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Metting` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `idLivre` INT NOT NULL,
-  `idUtilisateur` INT NOT NULL,
-  `datePrevue` DATE NOT NULL,
-  `typeRV` ENUM('journee', 'matin', 'apresmidi') NOT NULL,
-  `statusRV` ENUM('conclu', 'annule', 'attente') NULL DEFAULT 'attente',
+  `idBook` INT NOT NULL,
+  `idUser` INT NOT NULL,
+  `dateMetting` DATE NOT NULL,
+  `typeMetting` ENUM('day', 'morning', 'afternoon') NOT NULL,
+  `statusMetting` ENUM('finished', 'cancelled', 'waiting') NULL DEFAULT 'waiting',
   PRIMARY KEY (`id`),
-  INDEX `idUser_Users_idUser_idx` (`idUtilisateur` ASC),
-  INDEX `idLivreRV_Livres_idLivre_idx` (`idLivre` ASC),
   CONSTRAINT `idUserRV_Users_idUser`
-    FOREIGN KEY (`idUtilisateur`)
-    REFERENCES `bibliothequeMB_DB`.`Utilisateurs` (`id`)
+    FOREIGN KEY (`idUser`)
+    REFERENCES `libraryMB_DB`.`User` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `idLivreRV_Livres_idLivre`
-    FOREIGN KEY (`idLivre`)
-    REFERENCES `bibliothequeMB_DB`.`Livres` (`id`)
+  CONSTRAINT `idBookRV_Books_idBook`
+    FOREIGN KEY (`idBook`)
+    REFERENCES `libraryMB_DB`.`Books` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Emprunts`
+-- Table `libraryMB_DB`.`Borrow`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Emprunts` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Borrow` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `idLivre` INT NOT NULL,
-  `idUtilisateur` INT NOT NULL,
-  `dateEmp` DATE NOT NULL,
-  `dateRen` DATE NOT NULL,
-  `statusEM` ENUM('cours', 'fini', 'delai') NULL DEFAULT 'cours',
+  `idBook` INT NOT NULL,
+  `idUser` INT NOT NULL,
+  `dateBorrow` DATE NOT NULL,
+  `dateReturn` DATE NOT NULL,
+  `statusBorrow` ENUM('open', 'closed', 'delay') NULL DEFAULT 'open',
   PRIMARY KEY (`id`),
-  INDEX `idBookUDC_Books_idBookUDC_idx` (`idLivre`),
-  INDEX `idUser_Users_idUser_idx` (`idUtilisateur`),
-  CONSTRAINT `idLivreEm_Livres_idLivre`
-    FOREIGN KEY (`idLivre`)
-    REFERENCES `bibliothequeMB_DB`.`Livres` (`id`)
+  CONSTRAINT `idBookBor_Books_idBook`
+    FOREIGN KEY (`idBook`)
+    REFERENCES `libraryMB_DB`.`Books` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `idUserEm_Users_idUser`
-    FOREIGN KEY (`idUtilisateur`)
-    REFERENCES `bibliothequeMB_DB`.`Utilisateurs` (`id`)
+    FOREIGN KEY (`idUser`)
+    REFERENCES `libraryMB_DB`.`User` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Reservations`
+-- Table `libraryMB_DB`.`Reservations`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Reservations` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Reservations` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `idLivre` INT NOT NULL,
-  `idUtilisateur` INT NOT NULL,
-  `datePrevue` DATE NOT NULL,
-  `statusRS` ENUM('fini', 'annule', 'attente') NULL DEFAULT 'attente',
+  `idBook` INT NOT NULL,
+  `idUser` INT NOT NULL,
+  `dateReservation` DATE NOT NULL,
+  `statusReservation` ENUM('finished', 'cancelled', 'waiting') NULL DEFAULT 'waiting',
   PRIMARY KEY (`id`),
-  INDEX `idUser_Users_idUser_idx` (`idUtilisateur`),
-  INDEX `idBookUDC_Books_idBookUDC_idx` (`idLivre`),
   CONSTRAINT `idUserRes_Users_idUser`
-    FOREIGN KEY (`idUtilisateur`)
-    REFERENCES `bibliothequeMB_DB`.`Utilisateurs` (`id`)
+    FOREIGN KEY (`idUser`)
+    REFERENCES `libraryMB_DB`.`User` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `idLivreRes_Livres_idLivre`
-    FOREIGN KEY (`idLivre`)
-    REFERENCES `bibliothequeMB_DB`.`Livres` (`id`)
+  CONSTRAINT `idBookRes_Books_idBook`
+    FOREIGN KEY (`idBook`)
+    REFERENCES `libraryMB_DB`.`Books` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`UsersMotDePasse`
+-- Table `libraryMB_DB`.`UsersPassword`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`UsersMotDePasse` (
-  `idUtilisateur` INT NOT NULL,
-  `mdpEncripte` BLOB NOT NULL,
-  PRIMARY KEY (`idUtilisateur`),
-  CONSTRAINT `idUserMDP_Users_idUser`
-    FOREIGN KEY (`idUtilisateur`)
-    REFERENCES `bibliothequeMB_DB`.`Utilisateurs` (`id`)
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`UsersPassword` (
+  `idUser` INT NOT NULL,
+  `EncryptedPW` BLOB NOT NULL,
+  PRIMARY KEY (`idUser`),
+  CONSTRAINT `idUserPW_Users_idUser`
+    FOREIGN KEY (`idUser`)
+    REFERENCES `libraryMB_DB`.`User` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Editions`
+-- Table `libraryMB_DB`.`Editions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Editions` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Editions` (
   `isbn` INT(13) NOT NULL,
-  `maisonPub` VARCHAR(45) NULL,
+  `editor` VARCHAR(45) NULL,
   `edition` INT NULL DEFAULT 1,
-  `villePub` VARCHAR(30) NULL,
-  `anneePub` YEAR NULL,
+  `city` VARCHAR(30) NULL,
+  `yearPub` YEAR NULL,
   `pages` INT NOT NULL,
-  `prix` DOUBLE(10,2) NULL DEFAULT 0.00,
+  `price` DOUBLE(10,2) NULL DEFAULT 0.00,
   PRIMARY KEY (`isbn`)
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`ImagesLivres`
+-- Table `libraryMB_DB`.`ImagesBooks`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`ImagesLivres` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`ImagesBooks` (
   `isbn` INT(13) NOT NULL,
   `image` BLOB NULL,
   PRIMARY KEY (`isbn`),
   CONSTRAINT `isbn_Edition_isbn`
     FOREIGN KEY (`isbn`)
-    REFERENCES `bibliothequeMB_DB`.`Editions` (`isbn`)
+    REFERENCES `libraryMB_DB`.`Editions` (`isbn`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Amendes`
+-- Table `libraryMB_DB`.`Penalties`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Amendes` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Penalties` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `idUtilisateur` INT NOT NULL,
-  `idEmprunts` INT NOT NULL,
-  `dateAmende` DATE NOT NULL,
-  `valeur` DOUBLE(10,2) NOT NULL,
-  `datePaye` DATE NULL,
-  `statusAM` ENUM('ouverte', 'paye') NULL DEFAULT 'ouverte',
+  `idUser` INT NOT NULL,
+  `idBorrow` INT NOT NULL,
+  `datePenalty` DATE NOT NULL,
+  `value` DOUBLE(10,2) NOT NULL,
+  `datePay` DATE NULL,
+  `statusPenalty` ENUM('open', 'payed') NULL DEFAULT 'open',
   PRIMARY KEY (`id`),
-  INDEX `idUser_Users_idUser_idx` (`idUtilisateur`),
-  INDEX `idBorrow_Borrows_idBorrow_idx` (`idEmprunts`),
-  CONSTRAINT `idUserAmen_Users_idUser`
-    FOREIGN KEY (`idUtilisateur`)
-    REFERENCES `bibliothequeMB_DB`.`Utilisateurs` (`id`)
+  CONSTRAINT `idUserPenalty_Users_idUser`
+    FOREIGN KEY (`idUser`)
+    REFERENCES `libraryMB_DB`.`User` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `idEmpruntsAme_Emprunts_idEmprunts`
-    FOREIGN KEY (`idEmprunts`)
-    REFERENCES `bibliothequeMB_DB`.`Emprunts` (`id`)
+  CONSTRAINT `idBorrowAme_Borrow_idBorrow`
+    FOREIGN KEY (`idBorrow`)
+    REFERENCES `libraryMB_DB`.`Borrow` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Auteurs`
+-- Table `libraryMB_DB`.`Authors`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Auteurs` (
-  `idAuteur` INT NOT NULL AUTO_INCREMENT,
-  `p_a_PreNom` VARCHAR(45) NOT NULL,
-  `p_a_Nom` VARCHAR(45) NOT NULL,
-  `anneeNe` YEAR NULL,
-  `anneeMort` YEAR NULL,
-  `s_a_PreNom` VARCHAR(45) NULL,
-  `s_a_Nom` VARCHAR(45) NULL,
-  `t_a_PreNom` VARCHAR(45) NULL,
-  `t_a_Nom` VARCHAR(45) NULL,
-  PRIMARY KEY (`idAuteur`)
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Authors` (
+  `idAuthor` INT NOT NULL AUTO_INCREMENT,
+  `p_a_name` VARCHAR(45) NOT NULL,
+  `p_a_lastName` VARCHAR(45) NOT NULL,
+  `birth` YEAR NULL,
+  `passAway` YEAR NULL,
+  `s_a_name` VARCHAR(45) NULL,
+  `s_a_lastName` VARCHAR(45) NULL,
+  `t_a_name` VARCHAR(45) NULL,
+  `t_a_lastName` VARCHAR(45) NULL,
+  PRIMARY KEY (`idAuthor`)
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`HistoriquesLivres`
+-- Table `libraryMB_DB`.`HistoryBooks`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`HistoriquesLivres` (
-  `idLivre` INT NOT NULL,
-  `statusHL` ENUM('archive mort', 'renovation', 'perdu') NOT NULL,
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`HistoryBooks` (
+  `idBook` INT NOT NULL,
+  `statusHB` ENUM('dead archive', 'renovation', 'lost') NOT NULL,
   `dateStatus` DATE NOT NULL,
-  INDEX `id_livre_Livres_idLivre_idx` (`idLivre`),
-  CONSTRAINT `id_livre_Livres_idLivre`
-    FOREIGN KEY (`idLivre`)
-    REFERENCES `bibliothequeMB_DB`.`Livres` (`id`)
+  CONSTRAINT `idBook_Books_idBook`
+    FOREIGN KEY (`idBook`)
+    REFERENCES `libraryMB_DB`.`Books` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE CASCADE
+    ON UPDATE NO ACTION
 );
 
 
 -- -----------------------------------------------------
--- Table `bibliothequeMB_DB`.`Livres_Editions`
+-- Table `libraryMB_DB`.`Books_Editions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bibliothequeMB_DB`.`Livres_Editions` (
+CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`Books_Editions` (
   `isbn` INT(13) NOT NULL,
-  `idLivre` INT NOT NULL,
-  `idAuteur` INT NOT NULL,
-  INDEX `idLivre_idx` (`idLivre`),
-  INDEX `idAuteur_idx` (`idAuteur`),
+  `idBook` INT NOT NULL,
+  `idAuthor` INT NOT NULL,
   CONSTRAINT `isbn`
     FOREIGN KEY (`isbn`)
-    REFERENCES `bibliothequeMB_DB`.`Editions` (`isbn`)
+    REFERENCES `libraryMB_DB`.`Editions` (`isbn`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `idLivre`
-    FOREIGN KEY (`idLivre`)
-    REFERENCES `bibliothequeMB_DB`.`Livres` (`id`)
+  CONSTRAINT `idBook`
+    FOREIGN KEY (`idBook`)
+    REFERENCES `libraryMB_DB`.`Books` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `idAuteur`
-    FOREIGN KEY (`idAuteur`)
-    REFERENCES `bibliothequeMB_DB`.`Auteurs` (`idAuteur`)
+  CONSTRAINT `idAuthor`
+    FOREIGN KEY (`idAuthor`)
+    REFERENCES `libraryMB_DB`.`Authors` (`idAuthor`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
