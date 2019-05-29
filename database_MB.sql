@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `libraryMB_DB`.`User` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT,
   `user` VARCHAR(30) NOT NULL,
   `lastName` VARCHAR(45) NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
+  `firstName` VARCHAR(45) NOT NULL,
   `birthDay` DATE NOT NULL,
   `address` VARCHAR(60) NOT NULL,
   `phone` CHAR(10) NOT NULL,
